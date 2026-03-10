@@ -148,6 +148,121 @@ select * from Person where (City = 'Gotham' or City = 'New York')
 
 --kes elavad Gothamis ja New Yorgis ja on vanemad kui = 29
 select * from Person where City = 'Gotham' or City = 'New York'
-and Age >= 30
+and Age >= 30 
 
 select * from Person 
+
+--rida 124
+-- 3 tnd
+
+--kuvab tähestikulises järjekorras inimesi ja võtab aluseks nime
+select * from Person order by Name
+--kuvab vastupidises jäjestuses nimed
+select * from Person order by Name desc
+
+--võtab kolm esimest rida person tabelist
+select top 3 * from Person order by Name 
+
+--kolm esimest, aga tabeli järjestus on Age ja siis name
+select from Person
+select top 3 age, Name from Person order by cast(age as int)
+
+--näita esimesed 50% tabelist
+select top 50 PERCENT * from Person
+
+--kõikide isikute koondvanus
+select SUM(cast(age as int)) from person
+
+--näitab kõige nooremat isikut
+
+select min(cast(age as int)) from person
+
+--kõige vanem isik
+select MAX(cast(age as int)) from person
+
+--muudame Age veeru int andmetüübiks
+alter table person
+alter column Age int;
+
+--näeme konkreetsetes linnades olevate isikute koondvanust
+select SUM(cast(age as int)) from Person where City = 'Gotham' or city = 'New York'
+select city, SUM(age) as totalage from Person group by city
+
+--kuvab esimeses reas välja toodud järjestuses ja kuvab Age totalAge-ks
+--järjestab City-s olevate nimede järgi ja siis genderId järgi
+select city, genderId, SUM(age) as totalage from Person
+group by city, GenderID order by city
+
+--näitab, et mitu rida on selles tabelis
+select * from person
+select COUNT(*) from person
+
+--näitab tulemust, et mitu inimest on GenderId väärtusega 2 konkreetses linnas
+--arvutab vanuse kokku konkreetss linnas
+select city, count(genderid) as TotalPerson(s) from Person group by city
+select city, count(genderId) as TotalPersons, SUM(age) as totalage from Person
+group by city, GenderID order by city
+
+select GenderId, city, SUM(Age) as TotalAge, COUNT(Id) as [Total Person(s)]
+from Person
+where GenderId = '2'
+group by GenderId, City
+
+--näitab ära inimeste koondvanuse, mis on üle 41 aasta ja
+--kui palju neid igas linnas elab
+--eristab soo järgi
+select genderid, city, SUM(age) as TotalAge,
+COUNT(Id) as [Total Person(s)]
+from Person 
+group by GenderID, city having SUM(age)  > 41
+
+--loome tabelid employees ja department
+create table Department
+(Id int not null primary key,
+DepartmentName nvarchar(50) null,
+Location nvarchar(50) null,
+DepartmentHead nvarchar(50) null)
+
+create table Employees
+(Id int not null primary key,
+Name nvarchar(50) null,
+Gender nvarchar(50) null,
+Salary nvarchar(50) null,
+DepartmentId int null)
+
+
+insert into Employees (Id, Name, Gender, Salary, DepartmentId)
+values (1, 'Tom', 'Male', 4000, 1),
+(2, 'Pam', 'Female', 3000, 3),
+(3, 'John', 'Male', 3500, 1),
+(4, 'Sam', 'Male', 4500, 2),
+(5, 'Todd', 'Male', 2800, 2),
+(6, 'Ben', 'Male', 7000, 1),
+(7, 'Sara', 'Female', 4800, 3),
+(8, 'Valarie', 'Female', 5500, 1),
+(9, 'James', 'Male', 6500, null),
+(10, 'Russell', 'Male', 8800, null)
+
+insert into Department (Id, DepartmentName, Location, DepartmentHead)
+values (1, 'IT', 'London', 'Rick'),
+(2, 'Payroll', 'Delhi', 'Ron'),
+(3, 'HR', 'New York', 'Christie'),
+(4, 'Other Department', 'Sydney', 'Cindrella')
+
+select * from Department
+select * from employees
+
+--
+select name, Gender, salary, departmentname
+from employees
+left join Department
+on Employees.DepartmentId = Department.id
+
+--arvutame kõikide palgad kokku
+
+select SUM(cast(salary as int)) from employees
+--min palga saaja
+select MIN(cast(salary as int)) from employees
+
+
+
